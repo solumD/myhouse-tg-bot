@@ -120,13 +120,6 @@ async def start_cmd(message: Message, state: FSMContext):
     )
 
 
-@users_router.message()
-async def all_msg(message: Message, state: FSMContext):
-    logger.info(f"Unhandled msg update {message}")
-    await message.answer(text=msg_texts.TEXTS[TEXTS_LABELS.UNKNOWN.value])
-    await start_cmd(message, state)
-
-
 @users_router.callback_query(lambda q: q.data.startswith("go_by_id:"))
 async def go_to_callback(query: CallbackQuery, state: FSMContext):
     param_id = int(query.data.split(":")[1])
@@ -166,13 +159,6 @@ async def back_to_callback(query: CallbackQuery, state: FSMContext):
         reply_markup=kb,
     )
     await query.answer()
-
-
-@users_router.callback_query()
-async def all_callback(query: CallbackQuery, state: FSMContext):
-    logger.info(f"Unhandled callback update {query.message}")
-    await query.message.answer(text=msg_texts.TEXTS[TEXTS_LABELS.UNKNOWN.value])
-    await start_cmd(query.message, state)
 
 
 @admins_router.message(Command("update"))
@@ -215,3 +201,18 @@ async def update_cmd(message: Message, state: FSMContext):
         return await json_format_error_notify(err_txt=ex.detail)
 
     await json_updated_notify(message.from_user, backup_path=back_path)
+
+
+@users_router.message()
+async def all_msg(message: Message, state: FSMContext):
+    logger.info(f"Unhandled msg update {message}")
+    await message.answer(text=msg_texts.TEXTS[TEXTS_LABELS.UNKNOWN.value])
+    await start_cmd(message, state)
+
+
+@users_router.callback_query()
+async def all_callback(query: CallbackQuery, state: FSMContext):
+    logger.info(f"Unhandled callback update {query.message}")
+    await query.message.answer(text=msg_texts.TEXTS[TEXTS_LABELS.UNKNOWN.value])
+    await start_cmd(query.message, state)
+
