@@ -284,17 +284,20 @@ def backup_file(file_path, backup_dir) -> str:
     backup_path = os.path.join(backup_dir, backup_file_name)
 
     # Copy the file
-    shutil.copy2(file_path, backup_path)
-    logger.info(f"Backup created: {backup_path}")
+    try:
+        shutil.copy2(file_path, backup_path)
+        logger.info(f"Backup created: {backup_path}")
 
-    # Clean up old backups (keep only the last 5)
-    backups = sorted(
-        [f for f in os.listdir(backup_dir) if f.startswith(base_name)], reverse=True
-    )
+        # Clean up old backups (keep only the last 5)
+        backups = sorted(
+            [f for f in os.listdir(backup_dir) if f.startswith(base_name)], reverse=True
+        )
 
-    for old_backup in backups[5:]:
-        old_backup_path = os.path.join(backup_dir, old_backup)
-        os.remove(old_backup_path)
-        logger.info(f"Old backup removed: {old_backup_path}")
+        for old_backup in backups[5:]:
+            old_backup_path = os.path.join(backup_dir, old_backup)
+            os.remove(old_backup_path)
+            logger.info(f"Old backup removed: {old_backup_path}")
 
-    return backup_path
+        return backup_path
+    except FileNotFoundError:
+        logger.error("Error while creating backup (file to backup not found)")
