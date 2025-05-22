@@ -1,0 +1,13 @@
+[Unit]
+Description=CodeCup bot service
+
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/path/to/bot/directory
+ExecStart=/path/to/bot/directory/venv/bin/python3 /path/to/bot/directory/app.py
+
+[Install]
+WantedBy=multi-user.target

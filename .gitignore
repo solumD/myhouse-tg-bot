@@ -1,0 +1,12 @@
+*.env
+/.venv
+/venv
+/logs
+*.log
+data.json
+
+.idea/
+__pycache__/
+!.pyc
+!.p
+data_backups/
